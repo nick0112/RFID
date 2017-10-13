@@ -1,0 +1,24 @@
+#include "menu.h"
+
+
+MYMENU MENU
+{
+	POPUP "&Connection"
+	{
+		MENUITEM "&Connect",                    IDM_Connect
+		MENUITEM "&Exit",                       IDM_Exit
+
+	}
+	POPUP "&Settings"
+	{
+		POPUP "&Port"
+		{
+				MENUITEM "&COM1",               IDM_COM1
+				MENUITEM "&COM2",               IDM_COM2
+		}
+		MENUITEM "&Comm Parameters",		    IDM_CommParameters
+	}
+
+	MENUITEM "&Help",                           IDM_HELP
+}
+
