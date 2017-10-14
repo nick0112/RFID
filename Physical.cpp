@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include "Application.h"
 
+BOOL start = false;
+
 /*----------------------------------------------------------------------------------------------------
 --	Function		unsigned char SelectLoopCallback(LPSKYTEK_TAG, void*)
 
@@ -40,7 +42,7 @@
 --	Date:			9/30/2017
 --
 --
---	Programmer:		Nicholas Chow
+--	Programmer:		Nicholas Chow, Calvin Lai
 --
 --	Notes:			This function will continuously read the tag when it is detected by the reader.
 --					Once the reader is complete, we retrieve the tag, and print out the Tag ID.
@@ -49,7 +51,17 @@
 
 unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user)
 {
-	return 0;
+	if (start) {
+		if (lpTag != NULL) {
+			printCharacter("Tag: ");
+			printCharacter(lpTag->friendly);
+			printCharacter(" Type: ");
+			printCharacter(SkyeTek_GetTagTypeNameFromType(lpTag->type));
+			printCharacter("\n");
+			SkyeTek_FreeTag(lpTag);
+		}
+	}
+	return start;
 }
 
 
