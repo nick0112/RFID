@@ -16,12 +16,9 @@
 */
 
 #define IDM_Connection			101
-#define IDM_Connect				102
-#define IDM_Exit				103
-#define IDM_Settings			104
-#define IDM_Port				105
-#define IDM_CommParameters		106
-#define IDM_HELP				107
-#define IDM_COM1				108
-#define IDM_COM2				109
+#define IDM_Start				102
+#define IDM_Stop				103
+#define IDM_HELP				105
+#define IDM_Exit				104
+
 	

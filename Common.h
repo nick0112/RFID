@@ -28,22 +28,22 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include "SkyeTekAPI.h"
+#include "SkyeTekProtocol.h"
 
 // Global Variables
-extern BOOL isConnected;
+extern BOOL start;
 extern HWND hwnd;
-extern HANDLE hComm;
-extern LPCSTR	lpszCommName;
-extern BOOL paramChanged;
-extern COMMCONFIG cc;
+extern HANDLE h;
+extern DWORD id;
+
 
 
 // Functions shared by layers
-void openPort();
-BOOL changeCommParams();
 void connect();
 void printCharacter(char* str);
-BOOL writeABuffer(char* str, DWORD dwToWrite);
+DWORD WINAPI ConnectReader(LPVOID lpParameter);
+unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
 
 
 #endif

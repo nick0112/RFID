@@ -4,21 +4,12 @@
 MYMENU MENU
 {
 	POPUP "&Connection"
-	{
-		MENUITEM "&Connect",                    IDM_Connect
-		MENUITEM "&Exit",                       IDM_Exit
+{
+	MENUITEM "&Start",                    IDM_Start
+	MENUITEM "&Stop",                     IDM_Stop
 
-	}
-	POPUP "&Settings"
-	{
-		POPUP "&Port"
-		{
-				MENUITEM "&COM1",               IDM_COM1
-				MENUITEM "&COM2",               IDM_COM2
-		}
-		MENUITEM "&Comm Parameters",		    IDM_CommParameters
-	}
-
-	MENUITEM "&Help",                           IDM_HELP
 }
 
+MENUITEM "&Help",                         IDM_HELP
+MENUITEM "&Exit"						  IDM_Exit
+}

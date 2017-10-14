@@ -30,15 +30,11 @@
 #include "Physical.h"
 
 
-COMMCONFIG cc;
-COMMPROP commprop;
-DCB dcb;
-HANDLE rThread;
-DWORD threadId;
-
+HANDLE h;
+DWORD id;
 
 /*----------------------------------------------------------------------------------------------------
---	Function		void changeCommParams()
+--	Function		DWORD WINAPI ConnectReader(LPVOID lpParameter)
 --
 --
 --	Program:		Dumb Terminal
@@ -49,44 +45,22 @@ DWORD threadId;
 --
 --	Programmer:		Nicholas Chow
 --
---	Notes:			This function gets the comm config dialog. Then it reads the current configs, and
---					sets the new configs if the user enters new value for each parameter.
+--	Notes:			This function is the main thread function. It finds the reader then it calls
+--					selectTags. Loop breaks when SelectLoopCallBack returns 0
 --
 */
 
-BOOL changeCommParams()
+DWORD WINAPI ConnectReader(LPVOID lpParameter)
 {
-	cc.dwSize = sizeof(COMMCONFIG);
-	cc.wVersion = 0x100;
-	GetCommConfig(hComm, &cc, &cc.dwSize);
-	if (CommConfigDialog(lpszCommName, hwnd, &cc))
-	{
-		// Read the current configurations
-		if (!GetCommState(hComm, &dcb))
-		{
-			MessageBox(hwnd, "Initialization Failed", NULL, MB_OK);
-			return FALSE;
-		}
-		else
-		{
-			if (SetCommState(hComm, &cc.dcb))
-			{
-				MessageBox(hwnd, "Settings Applied", "New Settings", MB_OK);
-				return TRUE;
-			}
-			else
-			{
-				MessageBox(hwnd, "Settings Failed", NULL, MB_OK);
-				return FALSE;
-			}
-		}
-	}
+	return 0;
 }
+
+
 
 /*----------------------------------------------------------------------------------------------------
 --	Function		void connect()
 --
---	Program:		Dumb Terminal
+--	Program:		RFID
 --
 --
 --	Date:			9/30/2017
@@ -94,29 +68,15 @@ BOOL changeCommParams()
 --
 --	Programmer:		Nicholas Chow
 --
---	Notes:			This function first checks if the commname has been set yet. Then it proceeds 
---					to open the port and set the state to connect mode. It also creates a new thread
---					for reading.
+--	Notes:			This function creates a thread that communicates with the SkyeModule
+--					reader.
 --
 */
 void connect()
 {
-	if (lpszCommName == NULL)
+	h = CreateThread(NULL, 0, ConnectReader, NULL, 0, &id);
+	if (h == NULL)
 	{
-		MessageBox(hwnd, "Please select COM1 or COM2", NULL, MB_OK);
+		MessageBox(NULL, "Thread Creation Failed", "", MB_OK);
 	}
-	else
-	{
-		openPort();
-		isConnected = TRUE;
-		rThread = 0;
-		// Create the reading thread
-		rThread = CreateThread(NULL, 0, ReadFromPort, (LPVOID)hwnd, 0, &threadId);
-		if (rThread)
-		{
-			MessageBox(hwnd, "Thread Launched for Reading", "Thread", MB_OK);
-			CloseHandle(rThread);
-		}
-	}
-	
 }

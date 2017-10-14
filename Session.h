@@ -23,10 +23,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-extern COMMPROP commprop;
-extern DCB dcb;
-extern HANDLE rThread;
-extern DWORD threadId;
+
 
 
 #endif

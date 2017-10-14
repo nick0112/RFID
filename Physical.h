@@ -5,7 +5,7 @@
 --
 --
 --
--- Functions:		DWORD WINAPI ReadFromPort(LPVOID lpvoid);
+-- Functions:		unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
 --
 --
 -- Date:			9/30/2017
@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 
-DWORD WINAPI ReadFromPort(LPVOID lpvoid);
+
 
 
 #endif

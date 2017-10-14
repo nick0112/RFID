@@ -127,52 +127,14 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 		case WM_COMMAND:
 			switch (LOWORD (wParam))
 			{
-          		case IDM_COM1:
-					lpszCommName = "COM1";
-				break;
-				case IDM_COM2:
-					lpszCommName = "COM2";
-				break;
-				case IDM_Connect:
-					if (!isConnected)
-					{
-						if (lpszCommName == NULL)
-						{
-							lpszCommName = "COM1";
-						}
-						connect();
-					}
+				case IDM_Start:
+					connect();
 				break;
 				case IDM_HELP:
 					MessageBox(NULL, "Dumb Terminal", "Assignment 1", MB_OK);
 				break;
 				case IDM_Exit:
 					ExitProcess(5);
-				case IDM_CommParameters:	
-				if (changeCommParams())
-				{
-					paramChanged = TRUE;
-				}
-				break;
-			}
-		break;
-		case WM_CHAR:	// Process keystroke
-			
-			
-			if (isConnected)
-			{
-				str[0] = (char)wParam;
-				writeABuffer(str, 1);
-			}
-			else
-			{
-				MessageBox(NULL, "Port Not Opened, Can't Write", "", MB_OK);
-			}
-
-			if (wParam == VK_ESCAPE)
-			{
-				isConnected = FALSE;
-				MessageBox(NULL, "You exited connect mode", "Command Mode", MB_OK);
 			}
 		break;
 		
