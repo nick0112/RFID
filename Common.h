@@ -36,12 +36,15 @@ extern BOOL start;
 extern HWND hwnd;
 extern HANDLE h;
 extern DWORD id;
-
+extern LPSKYETEK_DEVICE *devices;
+extern LPSKYETEK_READER *readers;
+extern SKYETEK_STATUS status;
 
 
 // Functions shared by layers
 void connect();
-void printCharacter(char* str);
+void disconnect();
+void print(char* str);
 DWORD WINAPI ConnectReader(LPVOID lpParameter);
 unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
 

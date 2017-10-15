@@ -169,12 +169,16 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 --	Notes:			Simple function for output.
 --
 */
-void printCharacter(char* string)
+void print(char* string)
 {
 	HDC hdc;
+	RECT r;
 	hdc = GetDC((HWND)hwnd);
-	static unsigned k = 0;
-	TextOut(hdc, 10 * k, 0, string, strlen(string));
-	k++;
+	GetClientRect(hwnd, &r);
+	BeginPath(hdc);
+	//static unsigned k = 0;
+	TextOut(hdc, r.left, r.top, string, strlen(string));
+	EndPath(hdc);
+	//k++;
 	ReleaseDC((HWND)hwnd, hdc);
 }

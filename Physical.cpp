@@ -53,11 +53,11 @@ unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user)
 {
 	if (start) {
 		if (lpTag != NULL) {
-			printCharacter("Tag: ");
-			printCharacter(lpTag->friendly);
-			printCharacter(" Type: ");
-			printCharacter(SkyeTek_GetTagTypeNameFromType(lpTag->type));
-			printCharacter("\n");
+			print("Tag: ");
+			print(lpTag->friendly);
+			print(" Type: ");
+			print(SkyeTek_GetTagTypeNameFromType(lpTag->type));
+			print("\n");
 			SkyeTek_FreeTag(lpTag);
 		}
 	}
