@@ -51,8 +51,14 @@ BOOL start = false;
 
 unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user)
 {
-	if (start) {
+		/*
 		if (lpTag != NULL) {
+			LPCSTR msg = "";
+			char* msg2 = "";
+			for (int i = 0; i < sizeof(lpTag->friendly); i++) {
+				msg2 += (lpTag->friendly + i);
+			}
+			MessageBox(NULL, lpTag->friendly+1, "", MB_OK);
 			print("Tag: ");
 			print(lpTag->friendly);
 			print(" Type: ");
@@ -60,9 +66,60 @@ unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user)
 			print("\n");
 			SkyeTek_FreeTag(lpTag);
 		}
-	}
-	return start;
+		*/
+		char inputBuffer[100] = "";
+		DWORD nBytesRead;
+		DWORD dwEvent;
+		DWORD dwError;
+		DWORD dwRes;
+		DWORD dwRead;
+		COMSTAT cs;
+		OVERLAPPED osReader = { 0 };
+		BOOL fWaitingOnRead = FALSE;
+
+		osReader.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		if (osReader.hEvent == NULL) {
+
+		}
+
+		SetCommMask(h, EV_RXCHAR);
+		while (start) {
+			if (WaitCommEvent(h, &dwEvent, NULL)) {
+
+				ClearCommError(h, &dwError, &cs);
+				if ((dwEvent & EV_RXCHAR) && cs.cbInQue) {
+					print(lpTag->friendly);
+				}
+			}
+			else {
+				locProcessCommError(GetLastError());
+			}
+			if (fWaitingOnRead) {
+				dwRes = WaitForSingleObject(osReader.hEvent, READ_TIMEOUT);
+				switch (dwRes) {
+				case WAIT_OBJECT_0:
+					if (!GetOverlappedResult(h, &osReader, &dwRead, FALSE)) {
+
+					}
+					else {
+						fWaitingOnRead = FALSE;
+					}
+					break;
+				case WAIT_TIMEOUT:
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		PurgeComm(h, PURGE_RXCLEAR);
+		return start;
 }
 
 
+void locProcessCommError(DWORD dwError) {
+	LPDWORD lrc = 0;
+	COMSTAT cs;
+	ClearCommError(h, lrc, &cs);
+}
 
