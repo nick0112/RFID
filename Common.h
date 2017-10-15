@@ -44,7 +44,7 @@ extern SKYETEK_STATUS status;
 // Functions shared by layers
 void connect();
 void disconnect();
-void print(char* str);
+void print(TCHAR* str);
 DWORD WINAPI ConnectReader(LPVOID lpParameter);
 unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
 

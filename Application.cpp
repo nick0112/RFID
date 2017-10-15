@@ -142,7 +142,6 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 		
 		case WM_PAINT:		// Process a repaint message
 			hdc = BeginPaint (hwnd, &paintstruct); // Acquire DC
-			TextOut (hdc, 0, 0, str, strlen (str)); // output character
 			EndPaint (hwnd, &paintstruct); // Release DC
 		break;
 
@@ -171,16 +170,27 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 --	Notes:			Simple function for output.
 --
 */
-void print(char* string)
+void print(TCHAR* string)
 {
 	HDC hdc;
 	RECT r;
+	TEXTMETRIC tm;
+	SIZE size;
+
+	static int X = 0;
+	static int Y = 0;
+
 	hdc = GetDC((HWND)hwnd);
 	GetClientRect(hwnd, &r);
-	BeginPath(hdc);
-	//static unsigned k = 0;
-	TextOut(hdc, r.left, r.top, string, strlen(string));
-	EndPath(hdc);
-	//k++;
+	GetTextMetrics(hdc, &tm);
+	int width = r.left - r.right;
+	int height = r.top - r.bottom;
+	
+	GetTextExtentPoint32(hdc, str, strlen(str), &size);
+
+
+	TextOut(hdc, X, Y, string, strlen(string));
+	Y = Y + tm.tmHeight + tm.tmExternalLeading;
+	
 	ReleaseDC((HWND)hwnd, hdc);
 }
