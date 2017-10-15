@@ -130,6 +130,8 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 				case IDM_Start:
 					connect();
 				break;
+				case IDM_Stop:
+					disconnect();
 				case IDM_HELP:
 					MessageBox(NULL, "Dumb Terminal", "Assignment 1", MB_OK);
 				break;
