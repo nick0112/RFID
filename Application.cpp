@@ -35,7 +35,6 @@ char Name[] = "RFID Reader";
 char str[80] = "";
 HWND hwnd;
 HDC hdc;
-HANDLE hComm;
 LPCSTR	lpszCommName;
 BOOL paramChanged;
 BOOL isConnected;
@@ -88,7 +87,7 @@ int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
 		return 0;
 
 	hwnd = CreateWindow (Name, Name, WS_OVERLAPPEDWINDOW, 10, 10,
-   							600, 400, NULL, NULL, hInst, NULL);
+   							1600, 1400, NULL, NULL, hInst, NULL);
 	ShowWindow (hwnd, nCmdShow);
 	UpdateWindow (hwnd);
 
@@ -140,6 +139,9 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 					disconnect();
 					print("Disconnected");
 				break;
+				case IDM_Clear:
+					//cls(hdc);
+				break;
 				case IDM_HELP:
 					MessageBox(NULL, "RFID", "Assignment 2", MB_OK);
 				break;
@@ -187,14 +189,27 @@ void print(TCHAR* string)
 	SIZE size;
 	static int x = 0;
 	static int y = 0;
+	static unsigned k = 0;
+	
 	
 	hdc = GetDC((HWND)hwnd);
 	GetClientRect(hwnd, &r);
-	GetTextMetrics(hdc, &tm);
 	int width = r.left - r.right;
 	int height = r.top - r.bottom;
+	GetTextMetrics(hdc, &tm);
 	GetTextExtentPoint32(hdc, str, strlen(str), &size);
-	TextOut(hdc, x, y, string, strlen(string));
-	y = y + tm.tmHeight + tm.tmExternalLeading;
+	if (printing)
+	{
+		TextOut(hdc, 10*k, y, string, strlen(string));
+		k++;
+	}
+	else
+	{
+		TextOut(hdc, x, y, string, strlen(string));
+		y = y + tm.tmHeight + tm.tmExternalLeading;
+		k = 3;
+	}
 	ReleaseDC((HWND)hwnd, hdc);
 }
+
+
