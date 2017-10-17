@@ -35,11 +35,10 @@ char Name[] = "RFID Reader";
 char str[80] = "";
 HWND hwnd;
 HDC hdc;
-HANDLE hComm;
 LPCSTR	lpszCommName;
 BOOL paramChanged;
 BOOL isConnected;
-
+void cls(HANDLE hConsole);
 
 #pragma warning (disable: 4096)
 
@@ -140,6 +139,9 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 					disconnect();
 					print("Disconnected");
 				break;
+				case IDM_Clear:
+					cls(hdc);
+				break;
 				case IDM_HELP:
 					MessageBox(NULL, "RFID", "Assignment 2", MB_OK);
 				break;
@@ -197,4 +199,42 @@ void print(TCHAR* string)
 	TextOut(hdc, x, y, string, strlen(string));
 	y = y + tm.tmHeight + tm.tmExternalLeading;
 	ReleaseDC((HWND)hwnd, hdc);
+}
+
+
+void cls(HANDLE hConsole)
+{
+	COORD coordScreen = { 0, 0 };    /* here's where we'll home the
+									 cursor */
+	BOOL bSuccess;
+	DWORD cCharsWritten;
+	CONSOLE_SCREEN_BUFFER_INFO csbi; /* to get buffer info */
+	DWORD dwConSize;                 /* number of character cells in
+									 the current buffer */
+
+									 /* get the number of character cells in the current buffer */
+
+	bSuccess = GetConsoleScreenBufferInfo(hConsole, &csbi);
+	dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
+
+	/* fill the entire screen with blanks */
+
+	bSuccess = FillConsoleOutputCharacter(hConsole, (TCHAR) ' ',
+		dwConSize, coordScreen, &cCharsWritten);
+
+	/* get the current text attribute */
+
+	bSuccess = GetConsoleScreenBufferInfo(hConsole, &csbi);
+
+	/* now set the buffer's attributes accordingly */
+
+	bSuccess = FillConsoleOutputAttribute(hConsole, csbi.wAttributes,
+		dwConSize, coordScreen, &cCharsWritten);
+	
+
+	/* put the cursor at (0, 0) */
+
+	bSuccess = SetConsoleCursorPosition(hConsole, coordScreen);
+
+	return;
 }

@@ -52,24 +52,21 @@
 
 unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user)
 {
-	size_t length = sizeof(lpTag->friendly);
-	TCHAR* tag = new TCHAR[length];
-	memcpy(tag, lpTag, length);
+
 	if (start)
 	{
 		if (lpTag != NULL) 
 		{
-			print("Tag: ");
-			for (int i = 0; i < length; i++)
-			{
-				strcat(tag, lpTag->friendly + i);
-			}
+			size_t length = strlen(lpTag->friendly) + 1;
+			TCHAR* tag = new TCHAR[length];
+			memcpy(tag, lpTag, length);
 			print(tag);
+			delete[] tag;
 			SkyeTek_FreeTag(lpTag);
 		}
 	}
 	
-	return (!start);
+	return (start);
 }
 
 

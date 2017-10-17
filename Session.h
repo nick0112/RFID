@@ -21,7 +21,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-
+void test(TCHAR* array);
 
 
 #endif

@@ -7,6 +7,7 @@ MYMENU MENU
 {
 	MENUITEM "&Start",                    IDM_Start
 	MENUITEM "&Stop",                     IDM_Stop
+	MENUITEM "&Clear",                    IDM_Clear
 
 }
 

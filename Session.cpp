@@ -33,6 +33,8 @@ DWORD id;
 unsigned int numDevices;
 unsigned int numReaders;
 BOOL start;
+static int deviceCounter = 0;
+static int readerCounter = 0;
 
 /*----------------------------------------------------------------------------------------------------
 --	Function		ConnectReader
@@ -62,6 +64,7 @@ DWORD WINAPI ConnectReader(LPVOID lpParameter)
 	unsigned int numDevices;
 	unsigned int numReaders;
 
+
 	print("Discovering Reader...");
 	start = TRUE;
 	// Infinite Loop to look for reader
@@ -70,14 +73,25 @@ DWORD WINAPI ConnectReader(LPVOID lpParameter)
 		numDevices = SkyeTek_DiscoverDevices(&devices);
 		if (numDevices == 0)
 		{
+			// Only print Error message once.
+			if (deviceCounter == 1)
+			{
+				continue;
+			}
 			print("No Device Found...Please Connect");
+			deviceCounter++;
 			continue;
 		}
 		numReaders = SkyeTek_DiscoverReaders(devices, numDevices, &readers);
 
 		if (numReaders == 0)
 		{
+			if (readerCounter == 1)
+			{
+				continue;
+			}
 			print("No Reader Found...Please Connect");
+			readerCounter++;
 			continue;
 		}
 		
@@ -145,6 +159,16 @@ void connect()
 void disconnect()
 {
 	start = false;
+	WaitForSingleObject(h, 10000);
+	deviceCounter = 0;
+	readerCounter = 0;
 	CloseHandle(h);
-	h = NULL;
+}
+
+void test(TCHAR* array)
+{
+	size_t length = strlen(array) + 1;
+	TCHAR* tags = new TCHAR[length];
+	memcpy(tags, array, length);
+	print(tags);
 }
