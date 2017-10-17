@@ -1,26 +1,24 @@
 /*----------------------------------------------------------------------------------------------------
---	SOURCE FILE:	Session.cpp -		This is the session layer of the dumb emulator. In this layer,
---										user can connect, initialize or terminate the session.
+--	SOURCE FILE:	Session.cpp -		This is the session layer of the RFID. In this layer,
+--										user connects to the reader through SKYETECH API.
 --
+--	Program:		RFID Reader
 --
---	Program:		Dumb Terminal
---
---
---
--- Functions:		BOOL changeCommParams();
+--  Functions:		DWORD WINAPI ConnectReader(LPVOID lpParameter)
 --					void connect();
---					
+--					void disconnect();
 --
--- Date:			9/30/2017
+--  Date:			10/15/2017
 --
+--	Revisions:		N/A
 --
--- Programmer:		Nicholas Chow
+--	Designer:		Calvin Lai, Nicholas Chow
 --
--- Notes:			In this layer, the user is able to change the port paramaters as they want. 
---					A connect function is avaliable for the user to enter connect mode which sets the 
---					state of the program to connect mode.
---			
-*/
+--  Programmer:		Calvin Lai, Nicholas Chow
+--
+--  Notes:			In this layer, a thread is created to monitor the SkyeTech Reader.
+--					Connect() function connects the device and reader.  
+---------------------------------------------------------------------------------------------------*/
 #define STRICT
 
 #include "Common.h"
@@ -32,93 +30,89 @@
 
 HANDLE h;
 DWORD id;
+unsigned int numDevices;
+unsigned int numReaders;
+BOOL start;
 
 /*----------------------------------------------------------------------------------------------------
---	Function		DWORD WINAPI ConnectReader(LPVOID lpParameter)
+--	Function		ConnectReader
 --
+--	Program:		RFID
 --
---	Program:		Dumb Terminal
+--	Date:			10/15/2017
 --
+--	Revisions:		N/A
 --
---	Date:			9/30/2017
+--	Designer:		Nicholas Chow,	Calvin Lai
 --
+--	Programmer:		Nicholas Chow , Calvin Lai
 --
---	Programmer:		Nicholas Chow
+--  Return:			Returns DWORD, 1 indicating the user has quitted scanning
+--
+--	Interface		DWORD WINAPI ConnectReader(LPVOID lpParameter)
 --
 --	Notes:			This function is the main thread function. It finds the reader then it calls
 --					selectTags. Loop breaks when SelectLoopCallBack returns 0
---
-*/
+----------------------------------------------------------------------------------------------------*/
 
 DWORD WINAPI ConnectReader(LPVOID lpParameter)
 {
-	SKYETEK_STATUS status;
-	start = TRUE;
 	LPSKYETEK_DEVICE *devices = NULL;
 	LPSKYETEK_READER *readers = NULL;
 	unsigned int numDevices;
 	unsigned int numReaders;
-	TCHAR header[] = "Discovering reader...\n";
-	TCHAR found[] = "Reader Found...\n";
-	print(header);
 
+	print("Discovering Reader...");
+	start = TRUE;
 	// Infinite Loop to look for reader
 	while (start)
 	{
 		numDevices = SkyeTek_DiscoverDevices(&devices);
 		if (numDevices == 0)
 		{
-			MessageBox(NULL, "Device Not Found, Please Connect", "", MB_OK);
+			print("No Device Found...Please Connect");
 			continue;
 		}
 		numReaders = SkyeTek_DiscoverReaders(devices, numDevices, &readers);
 
-		if (numReaders == 0) {
-		
-			MessageBox(NULL, "Device Not Found, Please Connect", "", MB_OK);
-			SkyeTek_FreeDevices(devices, numDevices);
+		if (numReaders == 0)
+		{
+			print("No Reader Found...Please Connect");
 			continue;
 		}
+		
+		print("Start Reading...");
 		break;
-
-		if (!start)
-		{
-			return 1;
-		}
 	}
-	print(found);
-	status = SkyeTek_SelectTags(readers[0], AUTO_DETECT, SelectLoopCallback, 0, 1, NULL);
-	if (status == SKYETEK_SUCCESS)
-	{
-		MessageBox(NULL, "Entering select loop...", "Status", MB_OK);
-	}
-	else
-	{
-		MessageBox(NULL, "Selct Loop Entry Failed...", "Status", MB_OK);
-	}
-
+	
+	SkyeTek_SelectTags(readers[0], AUTO_DETECT, ReadTag, 0, 1, NULL);
 	SkyeTek_FreeReaders(readers, numReaders);
 	SkyeTek_FreeDevices(devices, numDevices);
+
 	return 1;
 }
 
 
 
 /*----------------------------------------------------------------------------------------------------
---	Function		void connect()
+--	Function		connect
 --
 --	Program:		RFID
 --
+--	Date:			10/15/2017
 --
---	Date:			9/30/2017
+--	Revisions:		N/A
 --
+--	Designer:		Nicholas Chow,	Calvin Lai
 --
---	Programmer:		Nicholas Chow
+--	Programmer:		Nicholas Chow , Calvin Lai
 --
---	Notes:			This function creates a thread that communicates with the SkyeModule
---					reader.
+--	Interface:		void connect()
 --
-*/
+--  Return:			void
+--
+--	Notes:			This function creates the thread, if thread creation failed, display messaage box.
+----------------------------------------------------------------------------------------------------*/
 void connect()
 {
 	h = CreateThread(NULL, 0, ConnectReader, NULL, 0, &id);
@@ -129,6 +123,25 @@ void connect()
 }
 
 
+/*----------------------------------------------------------------------------------------------------
+--	Function		disconnect
+--
+--	Program:		RFID
+--
+--	Date:			10/15/2017
+--
+--	Revisions:		N/A
+--
+--	Designer:		Nicholas Chow,	Calvin Lai
+--
+--	Programmer:		Nicholas Chow , Calvin Lai
+--
+--	Interface:		void disconnect()
+--
+--  Return:			void
+--
+--	Notes:			This function terminates the thread and sets the state to stop.
+----------------------------------------------------------------------------------------------------*/
 void disconnect()
 {
 	start = false;

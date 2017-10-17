@@ -1,17 +1,15 @@
 /*-----------------------------------------------------------------------------------------------------
 --	SOURCE FILE:	Physical.h -		Phsyical Header file contains functions used for physical layer
 --
---	Program:		Dumb Terminal
+--	Program:		RFID Reader
 --
+--  Functions:		N/A
 --
+--  Date:			10/15/2017
 --
--- Functions:		unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
+--  Designer:		Nicholas Chow
 --
---
--- Date:			9/30/2017
---
---
--- Programmer:		Nicholas Chow
+--  Programmer:		Nicholas Chow
 --
 */
 

@@ -2,17 +2,15 @@
 --	SOURCE FILE:	Session.h -		Session Header file contains global variables and functions 
 --									used for session layer.
 --
---	Program:		Dumb Terminal
+--	Program:		RFID Reader
 --
+--  Functions:		N/A
 --
+--  Date:			10/15/2017
 --
--- Functions:		N/A
+--	Designer:		Nicholas Chow
 --
---
--- Date:			9/30/2017
---
---
--- Programmer:		Nicholas Chow
+--  Programmer:		Nicholas Chow
 --
 */
 #pragma once

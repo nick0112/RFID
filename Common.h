@@ -1,21 +1,20 @@
 /*---------------------------------------------------------------------------------------------------
---	SOURCE FILE:	Common.h -		Header file contains global variables and functions shared by
+-- SOURCE FILE:		Common.h -		Header file contains global variables and functions shared by
 --									all 3 layers.
 --
+-- Program:			RFID Reader
 --
---	Program:		Dumb Terminal
+-- Functions:		void connect();
+--					void disconnect();
+--					void print(TCHAR* str);
+--					DWORD WINAPI ConnectReader(LPVOID lpParameter);
+--					unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user);
 --
+-- Date:			10/15/2017
 --
+-- Revisions:		N/A
 --
--- Functions:		void openPort();
---					BOOL changeCommParams();
---					void connect();
---					void printCharacter(char* str);
---					BOOL writeABuffer(char* str, DWORD dwToWrite);
---
---
--- Date:			9/30/2017
---
+-- Designer:		Nicholas Chow
 --
 -- Programmer:		Nicholas Chow
 --
@@ -36,9 +35,6 @@ extern BOOL start;
 extern HWND hwnd;
 extern HANDLE h;
 extern DWORD id;
-extern LPSKYETEK_DEVICE *devices;
-extern LPSKYETEK_READER *readers;
-extern SKYETEK_STATUS status;
 
 
 // Functions shared by layers
@@ -46,7 +42,7 @@ void connect();
 void disconnect();
 void print(TCHAR* str);
 DWORD WINAPI ConnectReader(LPVOID lpParameter);
-unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user);
+unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user);
 
 
 #endif

@@ -1,125 +1,75 @@
 /*---------------------------------------------------------------------------------------------------
---	SOURCE FILE:	Physical.cpp -	  The phsyical layer of the dumb emulator. This layer provides
+--	SOURCE FILE:	Physical.cpp -	  The phsyical layer of the RFID Reader. This layer provides
 --									  access to the physical communication link, these functions 
---									  include opening, reading and writing to port.
+--									  read the tag of the reader.
 --
+--	Program:		RFID Reader
 --
---	Program:		Dumb Terminal
+--  Functions:		unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user);
 --
+--  Date:			10/15/2017
 --
+--  Revisions:		N/A
 --
--- Functions:		void openPort();
---					BOOL writeABuffer(char* str, DWORD dwToWrite);
---					DWORD WINAPI ReadFromPort(LPVOID lpvoid)
+--	Designer:		Calvin Lai
 --
+--  Programmer:		Calvin Lai
 --
--- Date:			9/30/2017
---
---
--- Programmer:		Nicholas Chow
---
--- Notes:			In this layer, the port is opened for reading and writing. WriteABuffer  
---					contains a BOOL value to track if the write operation is overlapped.
---					ReadFromThread behaves similiarly to WriteABuffer, when reading is done,
---					printChar is called to output the character to the screen.
+--	Notes:			In this layer, ReadTag Function keeps getting input from the tag that
+--					is being scanned from the reader. Once the tag is read, it is being
+--					printed by the print function in the application layer.
 --					
 */
 
 #define STRICT
-#define READ_TIMEOUT 500
+#define _CRT_SECURE_NO_WARNINGS
 #include "Common.h"
 #include <stdio.h>
 #include "Application.h"
 
-BOOL start = false;
 
 /*----------------------------------------------------------------------------------------------------
---	Function		unsigned char SelectLoopCallback(LPSKYTEK_TAG, void*)
+--	Function		ReadTag
+--
+--	Program:		RFID
+--
+--	Date:			10/15/2017
+--
+--	Revisions:		N/A
+--
+--	Designer:		Nicholas Chow,	Calvin Lai
+--
+--	Programmer:		Nicholas Chow , Calvin Lai
+--
+--  Return:			Returns 0 when user changes state to stop
+--
+--	Interface		unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user)
+--
+--	Notes:			This function checks if start has been set to true. IF it continues, then
+--					it checks the tag to ensure it is not null. If it passes, then it prints out
+--					the tag.
+----------------------------------------------------------------------------------------------------*/
 
---	Program:		Dumb Terminal
---
---
---	Date:			9/30/2017
---
---
---	Programmer:		Nicholas Chow, Calvin Lai
---
---	Notes:			This function will continuously read the tag when it is detected by the reader.
---					Once the reader is complete, we retrieve the tag, and print out the Tag ID.
---
-*/
-
-unsigned char SelectLoopCallback(LPSKYETEK_TAG lpTag, void *user)
+unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user)
 {
-		/*
-		if (lpTag != NULL) {
-			LPCSTR msg = "";
-			char* msg2 = "";
-			for (int i = 0; i < sizeof(lpTag->friendly); i++) {
-				msg2 += (lpTag->friendly + i);
-			}
-			MessageBox(NULL, lpTag->friendly+1, "", MB_OK);
+	size_t length = sizeof(lpTag->friendly);
+	TCHAR* tag = new TCHAR[length];
+	memcpy(tag, lpTag, length);
+	if (start)
+	{
+		if (lpTag != NULL) 
+		{
 			print("Tag: ");
-			print(lpTag->friendly);
-			print(" Type: ");
-			print(SkyeTek_GetTagTypeNameFromType(lpTag->type));
-			print("\n");
+			for (int i = 0; i < length; i++)
+			{
+				strcat(tag, lpTag->friendly + i);
+			}
+			print(tag);
 			SkyeTek_FreeTag(lpTag);
 		}
-		*/
-		char inputBuffer[100] = "";
-		DWORD nBytesRead;
-		DWORD dwEvent;
-		DWORD dwError;
-		DWORD dwRes;
-		DWORD dwRead;
-		COMSTAT cs;
-		OVERLAPPED osReader = { 0 };
-		BOOL fWaitingOnRead = FALSE;
-
-		osReader.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
-		if (osReader.hEvent == NULL) {
-
-		}
-
-		SetCommMask(h, EV_RXCHAR);
-		while (start) {
-			if (WaitCommEvent(h, &dwEvent, NULL)) {
-
-				ClearCommError(h, &dwError, &cs);
-				if ((dwEvent & EV_RXCHAR) && cs.cbInQue) {
-					print(lpTag->friendly);
-				}
-			}
-			else {
-				locProcessCommError(GetLastError());
-			}
-			if (fWaitingOnRead) {
-				dwRes = WaitForSingleObject(osReader.hEvent, READ_TIMEOUT);
-				switch (dwRes) {
-				case WAIT_OBJECT_0:
-					if (!GetOverlappedResult(h, &osReader, &dwRead, FALSE)) {
-
-					}
-					else {
-						fWaitingOnRead = FALSE;
-					}
-					break;
-				case WAIT_TIMEOUT:
-					break;
-				default:
-					break;
-				}
-			}
-		}
-		PurgeComm(h, PURGE_RXCLEAR);
-		return start;
+	}
+	
+	return (!start);
 }
 
-
-void locProcessCommError(DWORD dwError) {
-	LPDWORD lrc = 0;
-	COMSTAT cs;
-	ClearCommError(h, lrc, &cs);
-}
 

@@ -1,17 +1,17 @@
 /*---------------------------------------------------------------------------------------------------
 --	SOURCE FILE:	Menu.h -		Menu Header file contains menu items.
 --
---	Program:		Dumb Terminal
+--	Program:		RFID Reader
 --
+--  Functions:		N/A
 --
+--  Date:			10/15/2017
+--  
+--  Revisions:		N/A
+-- 
+--  Designer:		Nicholas Chow
 --
--- Functions:		N/A
---
---
--- Date:			9/30/2017
---
---
--- Programmer:		Nicholas Chow
+--  Programmer:		Nicholas Chow
 --
 */
 

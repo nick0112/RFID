@@ -3,27 +3,25 @@
 --									  provided for users to access the communication parameters, and
 --									  displays characters when input is read from the serial port.
 -- 
---
---	Program:		Dumb Terminal 
---
+--	Program:		RFID Reader
 --
 --
--- Functions:		LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+--  Functions:		LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 --					int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
 -- 										LPSTR lspszCmdParam, int nCmdShow);
---					void printToScreen(char buffer[]);
+--					void print(TCHAR* string);
 --
+-- Date:			10/15/2017
 --
--- Date:			9/30/2017
+-- Designer:		Nicholas Chow , Calvin Lai
 --
---
--- Programmer:		Nicholas Chow
+-- Programmer:		Nicholas Chow , Calvin Lai
 --
 -- Notes:			The winMain function creates, registers the window. It also contains a loop to
 --					receive messages. WndProc function handles all the events such as key presses, 
 --					clicking on menu items. It also contains a print character function to output
 --					the character to the screen.
-*/
+---------------------------------------------------------------------------------------------------*/
 #define STRICT
 
 #include "Common.h"
@@ -33,7 +31,7 @@
 #include <windows.h>
 #include "Session.h"
 
-char Name[] = "Dumb Terminal";
+char Name[] = "RFID Reader";
 char str[80] = "";
 HWND hwnd;
 HDC hdc;
@@ -42,25 +40,29 @@ LPCSTR	lpszCommName;
 BOOL paramChanged;
 BOOL isConnected;
 
+
 #pragma warning (disable: 4096)
 
 
 /*----------------------------------------------------------------------------------------------------
---	Function		int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
- 						  LPSTR lspszCmdParam, int nCmdShow);
-
---	Program:		Dumb Terminal
---
+--	Function		WinMain
 --
 --	Date:			9/30/2017
 --
+--	Revisions:		N/A
+--
+--	Designer:		Nicholas Chow
 --
 --	Programmer:		Nicholas Chow
+--	
+--  Interface:		int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
+--													  LPSTR lspszCmdParam, int nCmdShow);
+--	
+--	Returns:		returns an int, conveys a status code
 --
 --	Notes:			This function creates, register the window. It also contains a loop
 --					to handle messages.
---
-*/
+----------------------------------------------------------------------------------------------------*/
 int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
  						  LPSTR lspszCmdParam, int nCmdShow)
 {
@@ -102,20 +104,24 @@ int WINAPI WinMain (HINSTANCE hInst, HINSTANCE hprevInstance,
 
 
 /*----------------------------------------------------------------------------------------------------
---	Function:		LRESULT CALLBACK WndProc (HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)		
---              
---	Program:		Dumb Terminal
+--	Function:		WndProc		
 --
+--	Date:			10/15/2017
 --
---	Date:			9/30/2017
+--	Revisions:		N/A
 --
+--	Designer:		Nicholas Chow
 --
 --	Programmer:		Nicholas Chow
 --
+--	Interface:		LRESULT CALLBACK WndProc (HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
+--
+--  Returns:		Return value is the result of the message processing and depends on the message sent
+--
 --	Notes:			This function contains a switch statement to handle the messages such as
 --					pressing a key, clicking on menu items.
---
-*/
+----------------------------------------------------------------------------------------------------*/
+
 LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
                           WPARAM wParam, LPARAM lParam)
 {
@@ -132,8 +138,10 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 				break;
 				case IDM_Stop:
 					disconnect();
+					print("Disconnected");
+				break;
 				case IDM_HELP:
-					MessageBox(NULL, "Dumb Terminal", "Assignment 1", MB_OK);
+					MessageBox(NULL, "RFID", "Assignment 2", MB_OK);
 				break;
 				case IDM_Exit:
 					ExitProcess(5);
@@ -144,8 +152,6 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 			hdc = BeginPaint (hwnd, &paintstruct); // Acquire DC
 			EndPaint (hwnd, &paintstruct); // Release DC
 		break;
-
-
 		case WM_DESTROY:	// Terminate program
       		PostQuitMessage (0);
 		break;
@@ -157,40 +163,38 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT Message,
 
 
 /*----------------------------------------------------------------------------------------------------
---	Function:		void printCharacter(char* string)
+--	Function:		print
 --
---	Program:		Dumb Terminal
+--	Date:			10/15/2017
 --
+--  Revisions:		N/A
 --
---	Date:			9/30/2017
---
+--	Designer:		Nicholas Chow
 --
 --	Programmer:		Nicholas Chow
 --
---	Notes:			Simple function for output.
+--  Interface:		void print(TCHAR* string)
 --
-*/
+--	Returns:		void
+--
+--	Notes:			Simple function for printing characters to the window.
+----------------------------------------------------------------------------------------------------*/
 void print(TCHAR* string)
 {
 	HDC hdc;
 	RECT r;
 	TEXTMETRIC tm;
 	SIZE size;
-
-	static int X = 0;
-	static int Y = 0;
-
+	static int x = 0;
+	static int y = 0;
+	
 	hdc = GetDC((HWND)hwnd);
 	GetClientRect(hwnd, &r);
 	GetTextMetrics(hdc, &tm);
 	int width = r.left - r.right;
 	int height = r.top - r.bottom;
-	
 	GetTextExtentPoint32(hdc, str, strlen(str), &size);
-
-
-	TextOut(hdc, X, Y, string, strlen(string));
-	Y = Y + tm.tmHeight + tm.tmExternalLeading;
-	
+	TextOut(hdc, x, y, string, strlen(string));
+	y = y + tm.tmHeight + tm.tmExternalLeading;
 	ReleaseDC((HWND)hwnd, hdc);
 }
