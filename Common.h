@@ -35,6 +35,7 @@ extern BOOL start;
 extern HWND hwnd;
 extern HANDLE h;
 extern DWORD id;
+extern BOOL printing;
 
 
 // Functions shared by layers

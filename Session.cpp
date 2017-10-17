@@ -35,6 +35,7 @@ unsigned int numReaders;
 BOOL start;
 static int deviceCounter = 0;
 static int readerCounter = 0;
+BOOL printing;
 
 /*----------------------------------------------------------------------------------------------------
 --	Function		ConnectReader
@@ -64,7 +65,7 @@ DWORD WINAPI ConnectReader(LPVOID lpParameter)
 	unsigned int numDevices;
 	unsigned int numReaders;
 
-
+	printing = FALSE;
 	print("Discovering Reader...");
 	start = TRUE;
 	// Infinite Loop to look for reader
@@ -165,10 +166,3 @@ void disconnect()
 	CloseHandle(h);
 }
 
-void test(TCHAR* array)
-{
-	size_t length = strlen(array) + 1;
-	TCHAR* tags = new TCHAR[length];
-	memcpy(tags, array, length);
-	print(tags);
-}
