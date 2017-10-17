@@ -1,0 +1,44 @@
+/**
+ * Creates a thread with the ConnectReader() function.
+ */
+connect() {
+    create a thread to find the reader
+    display message box with error message if not found
+}
+
+/**
+ * Searches for readers/devices. Displays either a success or failure message box if reader is
+ * found or not found. Function is run by the thread created when start button is pressed by user.
+ * If reader is found, ReadTag() is called.
+ */
+ConnectReader() {
+    searches for device
+    if device is found, displays success message box
+    if device is not found, display error message box
+    when the thread is closed, the devices are freed
+}
+
+/**
+ * Closes the thread when the stop button is pressed by user.
+ */
+disconnect() {
+    closes the thread created when user presses the stop button
+}
+
+/**
+ * Prints the selected message to screen.
+ */
+print() {
+    simply displays messages to screen
+}
+
+/**
+ * Waits for reader input. Reader waits until an RFID tag is discovered. Tag is then scanned and the
+ * tag ID is then printed to screen via print().
+ */
+ReadTag() {
+    enters a state where program waits for tag read event from the reader
+    upon successfully reading a tag, tag's id is displayed on screen via the print() method
+    program remains in this state until user presses the stop button
+}
+
