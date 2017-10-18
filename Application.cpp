@@ -35,9 +35,7 @@ char Name[] = "RFID Reader";
 char str[80] = "";
 HWND hwnd;
 HDC hdc;
-LPCSTR	lpszCommName;
-BOOL paramChanged;
-BOOL isConnected;
+
 
 
 #pragma warning (disable: 4096)

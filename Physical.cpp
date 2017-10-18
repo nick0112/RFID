@@ -19,7 +19,7 @@
 --					is being scanned from the reader. Once the tag is read, it is being
 --					printed by the print function in the application layer.
 --					
-*/
+---------------------------------------------------------------------------------------------------*/
 
 #define STRICT
 #define _CRT_SECURE_NO_WARNINGS
@@ -56,7 +56,7 @@ unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user)
 	TCHAR* tag = new TCHAR[128];
 	int index = 0;
 	printing = FALSE;
-	print("TAG: \n");
+	print("TAG: ");
 	if (start)
 	{
 		if (lpTag != NULL) 
@@ -71,12 +71,9 @@ unsigned char ReadTag(LPSKYETEK_TAG lpTag, void *user)
 				}
 
 			}
-			//delete[] tag;
 			SkyeTek_FreeTag(lpTag);
 		}
 	}
-	
-	//delete[] tag;
 	return (start);
 }
 
